@@ -135,3 +135,4 @@ C:\Users\izzet\Source\Repos\poetest\PoETest.API\obj\Debug\net8.0\PoETest.API.pdb
 C:\Users\izzet\Source\Repos\poetest\PoETest.API\obj\Debug\net8.0\PoETest.API.genruntimeconfig.cache
 C:\Users\izzet\Source\Repos\poetest\PoETest.API\obj\Debug\net8.0\ref\PoETest.API.dll
 C:\Users\izzet\Source\Repos\poetest\PoETest.API\bin\Debug\net8.0\PoETest.API.staticwebassets.runtime.json
+C:\Users\izzet\Source\Repos\poetest\PoETest.API\obj\Debug\net8.0\PoETest.API.sourcelink.json
