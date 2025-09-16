@@ -85,7 +85,9 @@
 
         #question {
             padding: 10px;
-
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #timerBox {
@@ -97,23 +99,43 @@
             border: 2px solid #444;
         }
 
-        #scoreBox {
+        #sideBox {
             flex: 1;
-            font-size: 4em;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 2px solid #444;
+            flex-direction: column;
+            gap: 10px; /* space between score and timer */
         }
 
-        #timeBox {
+        #scoreBox, #timerBox {
             flex: 1;
-            font-size: 4em;
-            font-weight: bold;
+            border: 2px solid #444;
+            border-radius: 8px;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            transition: color 0.3s ease;
+            align-items: center;
+            padding: 10px;
+        }
+
+        #scoreBox {
+            background: #222;
+            color: gold;
+        }
+
+        #timerBox {
+            background: #333;
+            color: white;
+        }
+
+        .score-label, .timer-label {
+            font-size: 1em;
+            opacity: 0.8;
+        }
+
+        .score-value, .timer-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 5px;
         }
 
         /* Pulse animation */
@@ -171,11 +193,13 @@
             }
 
             .option.correct {
-                background: green;
+                background: green !important;
+                color: white;
             }
 
             .option.wrong {
-                background: red;
+                background: red !important;
+                color: white;
             }
 
             .option.disabled {
@@ -186,11 +210,11 @@
         /* RESPONSIVE */
         @media (max-width: 768px) {
             header {
-                font-size: 1.8em;
+                font-size: 2em;
             }
 
             #questionBox {
-                font-size: 1.2em;
+                font-size: 2em;
             }
 
             #timeBox {
@@ -198,10 +222,47 @@
             }
 
             .option {
-                font-size: 1em;
+                font-size: 1.5em;
                 padding: 10px;
             }
         }
+
+        @media (min-width: 768px) {
+            .score-label, .timer-label {
+                font-size: 1.2em;
+            }
+
+            .score-value, .timer-value {
+                font-size: 3em;
+            }
+
+            #questionBox {
+                font-size: 2em;
+            }
+
+            .option {
+                font-size: 2em;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .score-label, .timer-label {
+                font-size: 2em;
+            }
+
+            .score-value, .timer-value {
+                font-size: 5em;
+            }
+
+            #questionBox {
+                font-size: 3em;
+            }
+
+            .option {
+                font-size: 3em;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -217,7 +278,6 @@
             <option value="impossible">Impossible</option>
         </select>
         <button onclick="loadQuestion()">Next Question</button>
-        <span>Score: <span id="score">0</span></span>
     </div>
 
     <main>
@@ -226,10 +286,17 @@
                 <div id="question">Loading question...</div>
                 <div id="questionImage"></div>
             </div>
-            <div id="timerBox">
-                <div id="scoreBox">Score: <span id="sideScore">0</span></div>
-                <div id="timeBox">30</div>
+            <div id="sideBox">
+                <div id="scoreBox">
+                    <div class="score-label">Score</div>
+                    <div id="sideScore" class="score-value">0</div>
+                </div>
+                <div id="timerBox">
+                    <div class="timer-label">Time</div>
+                    <div id="timeBox" class="timer-value">30</div>
+                </div>
             </div>
+
         </div>
 
         <div id="options"></div>
