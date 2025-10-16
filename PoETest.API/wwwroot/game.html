@@ -871,11 +871,11 @@
                 for (let i = 0; i < difficultyIndex; i++) {
                     const correct = difficultyResults[i];
                     resultsHTML += `
-                                                                <div class="difficulty-result-row ${difficultyNames[i]}">
-                                                                    <div class="result-row-name">${difficultyNames[i]}</div>
-                                                                    <div class="result-row-score">${correct} / ${questionsPerDifficulty}</div>
-                                                                </div>
-                                                            `;
+                                                                    <div class="difficulty-result-row ${difficultyNames[i]}">
+                                                                        <div class="result-row-name">${difficultyNames[i]}</div>
+                                                                        <div class="result-row-score">${correct} / ${questionsPerDifficulty}</div>
+                                                                    </div>
+                                                                `;
                 }
                 resultsHTML += '</div>';
                 prevResultsDisplay.innerHTML = resultsHTML;
@@ -1072,6 +1072,20 @@
                 .forEach(screen => screen.classList.remove('active'));
 
             document.querySelector('.' + screenClass).classList.add('active');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://ragqygjgtldfgymjwqwg.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhZ3F5Z2pndGxkZmd5bWp3cXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MTYwNDYsImV4cCI6MjA3NjE5MjA0Nn0.vw_9szibRi1FuuPUAQD5X2yh8bR48CbaT2qJsuxA1R0'
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
+
+        // Use supabase client
+        async function fetchData() {
+            const { data, error } = await supabase
+                .from('your_table')
+                .select('*')
+            console.log(data)
         }
     </script>
 
