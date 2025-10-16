@@ -1,0 +1,1117 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path of Exile Quiz Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #d0d0d0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, rgba(20, 25, 45, 0.95) 0%, rgba(30, 35, 60, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(139, 69, 19, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #c77d00;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            font-weight: bold;
+        }
+
+        .start-screen, .difficulty-screen, .question-screen, .result-screen, .leaderboard-screen {
+            display: none;
+        }
+
+            .start-screen.active, .difficulty-screen.active, .question-screen.active, .result-screen.active, .leaderboard-screen.active {
+                display: block;
+            }
+
+        .btn {
+            background: linear-gradient(135deg, #c77d00 0%, #8b4513 100%);
+            border: 2px solid #d4a574;
+            color: #fff;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(199, 125, 0, 0.3);
+        }
+
+            .btn:hover {
+                background: linear-gradient(135deg, #d4a574 0%, #c77d00 100%);
+                box-shadow: 0 6px 20px rgba(199, 125, 0, 0.5);
+                transform: translateY(-2px);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
+            border: 2px solid #666;
+        }
+
+            .btn-secondary:hover {
+                background: linear-gradient(135deg, #666 0%, #4a4a4a 100%);
+                box-shadow: 0 6px 20px rgba(100, 100, 100, 0.5);
+            }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+            .btn-group .btn {
+                margin: 0;
+                flex: 1;
+                min-width: 200px;
+            }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+
+        .difficulty-warmup {
+            background: #4a4a4a;
+            color: #aaa;
+            border: 1px solid #666;
+        }
+
+        .difficulty-easy {
+            background: #1a3d1a;
+            color: #7fff7f;
+            border: 1px solid #4a8c4a;
+        }
+
+        .difficulty-medium {
+            background: #3d3d1a;
+            color: #ffff7f;
+            border: 1px solid #8c8c4a;
+        }
+
+        .difficulty-hard {
+            background: #3d1a1a;
+            color: #ff7f7f;
+            border: 1px solid #8c4a4a;
+        }
+
+        .difficulty-impossible {
+            background: #2d1a3d;
+            color: #d47fff;
+            border: 1px solid #6a4a8c;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(199, 125, 0, 0.2);
+        }
+
+            .stat-card h3 {
+                color: #c77d00;
+                margin-bottom: 10px;
+                font-size: 0.9em;
+            }
+
+            .stat-card p {
+                font-size: 2em;
+                font-weight: bold;
+                color: #d0d0d0;
+            }
+
+        .question-text {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            text-align: center;
+            color: #e0e0e0;
+        }
+
+            .question-text ul {
+                text-align: left;
+                margin: 20px auto;
+                max-width: 600px;
+            }
+
+            .question-text li {
+                margin: 10px 0;
+                padding: 10px;
+                background: rgba(199, 125, 0, 0.1);
+                border-radius: 5px;
+                border-left: 3px solid #c77d00;
+            }
+
+        .question-image {
+            max-width: 300px;
+            max-height: 400px;
+            margin: 20px auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid #c77d00;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1em;
+            background: rgba(199, 125, 0, 0.2);
+            color: #ffd700;
+            border: 1px solid rgba(199, 125, 0, 0.4);
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #c77d00;
+            font-family: 'Courier New', monospace;
+        }
+
+            .timer.warning {
+                color: #ff7f7f;
+                animation: pulse 0.5s infinite;
+            }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .option {
+            background: rgba(199, 125, 0, 0.08);
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(199, 125, 0, 0.3);
+            text-align: center;
+            color: #d0d0d0;
+        }
+
+            .option:hover {
+                background: rgba(199, 125, 0, 0.15);
+                border-color: #c77d00;
+                transform: translateY(-3px);
+            }
+
+            .option.selected {
+                background: rgba(199, 125, 0, 0.3);
+                border-color: #c77d00;
+            }
+
+            .option.correct {
+                background: rgba(127, 255, 127, 0.2);
+                border-color: #7fff7f;
+                color: #7fff7f;
+            }
+
+            .option.incorrect {
+                background: rgba(255, 127, 127, 0.2);
+                border-color: #ff7f7f;
+                color: #ff7f7f;
+            }
+
+            .option.timeout {
+                background: rgba(255, 127, 127, 0.2);
+                border-color: #ff7f7f;
+                color: #ff7f7f;
+            }
+
+            .option img {
+                max-width: 100%;
+                max-height: 150px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+            }
+
+        .leaderboard {
+            margin-top: 30px;
+        }
+
+            .leaderboard table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .leaderboard th {
+                background: rgba(199, 125, 0, 0.2);
+                padding: 15px;
+                text-align: left;
+                color: #c77d00;
+                border-bottom: 2px solid rgba(199, 125, 0, 0.3);
+            }
+
+            .leaderboard td {
+                padding: 12px 15px;
+                border-bottom: 1px solid rgba(199, 125, 0, 0.1);
+                color: #d0d0d0;
+            }
+
+            .leaderboard tr:hover {
+                background: rgba(199, 125, 0, 0.08);
+            }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid rgba(199, 125, 0, 0.3);
+            background: rgba(199, 125, 0, 0.05);
+            color: #d0d0d0;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+            input[type="text"]:focus {
+                outline: none;
+                border-color: #c77d00;
+                background: rgba(199, 125, 0, 0.1);
+            }
+
+        .difficulty-info {
+            text-align: center;
+            padding: 20px;
+        }
+
+            .difficulty-info h2 {
+                margin-bottom: 10px;
+                font-size: 1.8em;
+                color: #c77d00;
+            }
+
+        .score-label {
+            font-size: 1.2em;
+            color: #c77d00;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .score-display {
+            font-size: 4.5em;
+            text-align: center;
+            color: #ffd700;
+            margin: 20px 0;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .previous-results-box {
+            background: linear-gradient(135deg, rgba(199, 125, 0, 0.1) 0%, rgba(139, 69, 19, 0.1) 100%);
+            border: 2px solid rgba(199, 125, 0, 0.3);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px auto;
+            max-width: 500px;
+        }
+
+        .previous-results-title {
+            font-size: 1.1em;
+            color: #c77d00;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .difficulty-result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            border-left: 4px solid;
+            transition: all 0.2s ease;
+        }
+
+            .difficulty-result-row:hover {
+                background: rgba(255, 255, 255, 0.06);
+                transform: translateX(5px);
+            }
+
+            .difficulty-result-row.warmup {
+                border-color: #666;
+            }
+
+            .difficulty-result-row.easy {
+                border-color: #4a8c4a;
+            }
+
+            .difficulty-result-row.medium {
+                border-color: #8c8c4a;
+            }
+
+            .difficulty-result-row.hard {
+                border-color: #8c4a4a;
+            }
+
+            .difficulty-result-row.impossible {
+                border-color: #6a4a8c;
+            }
+
+        .result-row-name {
+            font-size: 1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #d0d0d0;
+        }
+
+        .result-row-score {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .time-display {
+            font-size: 1.2em;
+            color: #c77d00;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+        }
+
+        #footer {
+            width: 100%;
+            display: block;
+            padding: 40px 0 0 0;
+            background: none;
+            text-align: center;
+        }
+
+        .footer-social {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+            .footer-social h3 {
+                color: #ffd700;
+                margin-bottom: 20px;
+                font-size: 1.4rem;
+            }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+            .footer-link svg {
+                width: 40px;
+                height: 40px;
+            }
+
+            .footer-link:hover {
+                background: rgba(255,255,255,0.15);
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            }
+
+            .footer-link .icon {
+                font-size: 2.5rem;
+                margin-bottom: 12px;
+                transition: transform 0.3s ease;
+            }
+
+            .footer-link:hover .icon {
+                transform: scale(1.1);
+            }
+
+            .footer-link .platform {
+                font-weight: 600;
+                margin-bottom: 4px;
+                font-size: 1.1rem;
+            }
+
+            .footer-link .handle {
+                font-size: 0.85rem;
+                opacity: 0.8;
+            }
+
+            /* Platform-specific styling */
+            .footer-link.youtube .icon {
+                color: #ff0000;
+            }
+
+            .footer-link.youtube:hover {
+                border-color: #ff0000;
+                box-shadow: 0 10px 25px rgba(255, 0, 0, 0.2);
+            }
+
+            .footer-link.discord .icon {
+                color: #5865f2;
+            }
+
+            .footer-link.discord:hover {
+                border-color: #5865f2;
+                box-shadow: 0 10px 25px rgba(88, 101, 242, 0.2);
+            }
+
+            .footer-link.twitch .icon {
+                color: #9146ff;
+            }
+
+            .footer-link.twitch:hover {
+                border-color: #9146ff;
+                box-shadow: 0 10px 25px rgba(145, 70, 255, 0.2);
+            }
+
+            .footer-link.kick .icon {
+                color: #53fc18;
+            }
+
+            .footer-link.kick:hover {
+                border-color: #53fc18;
+                box-shadow: 0 10px 25px rgba(83, 252, 24, 0.2);
+            }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .footer-links {
+                gap: 20px;
+            }
+
+            .footer-link {
+                min-width: 100px;
+                padding: 15px 10px;
+            }
+
+                .footer-link .icon {
+                    font-size: 2rem;
+                    margin-bottom: 8px;
+                }
+
+                .footer-link .platform {
+                    font-size: 1rem;
+                }
+
+                .footer-link .handle {
+                    font-size: 0.8rem;
+                }
+        }
+
+        @media (max-width: 480px) {
+            .footer-links {
+                gap: 15px;
+                justify-content: space-evenly;
+            }
+
+            .footer-link {
+                min-width: 80px;
+                padding: 12px 8px;
+            }
+
+            .footer-social h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div class="start-screen active">
+            <h1>⚔️ Path of Exile Quiz</h1>
+            <p style="text-align: center; font-size: 1.2em; margin-bottom: 30px; color: #d0d0d0;">
+                Test your knowledge with 25 questions across 5 difficulty levels!
+            </p>
+            <div class="btn-group">
+                <button class="btn" onclick="startGame()">Start Game</button>
+                <button class="btn btn-secondary" onclick="showLeaderboardScreen()">View Leaderboard</button>
+            </div>
+        </div>
+
+        <!-- Leaderboard Screen -->
+        <div class="leaderboard-screen">
+            <h1>🏅 Leaderboard</h1>
+            <div class="leaderboard">
+                <table id="standalone-leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                            <th>Time</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standalone-leaderboard-body"></tbody>
+                </table>
+            </div>
+            <button class="btn" onclick="showScreen('start-screen')">Back to Menu</button>
+        </div>
+
+        <!-- Difficulty Transition Screen -->
+        <div class="difficulty-screen">
+            <div class="difficulty-info">
+                <h2>Entering: <span id="current-difficulty"></span></h2>
+                <span class="difficulty-badge" id="difficulty-badge"></span>
+
+                <div class="score-label">Current Score</div>
+                <div class="score-display" id="current-score">0</div>
+
+                <div class="time-display">
+                    Time: <span id="difficulty-time-display">0:00.000</span>
+                </div>
+
+                <div id="previous-results-display"></div>
+
+                <button class="btn" onclick="nextQuestion()">Continue</button>
+            </div>
+        </div>
+
+        <!-- Question Screen -->
+        <div class="question-screen">
+            <div class="question-header">
+                <span class="difficulty-badge" id="question-difficulty-badge"></span>
+                <span class="score-badge" id="score-display">Score: 0</span>
+            </div>
+
+            <div class="timer" id="timer">0:00.000</div>
+
+            <div class="question-text" id="question-text"></div>
+
+            <img id="question-image" class="question-image" style="display: none;" />
+
+            <div class="options" id="options"></div>
+
+            <button class="btn" id="next-btn" style="display: none;" onclick="handleNext()">Next Question</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div class="result-screen">
+            <h1>🏆 Game Complete!</h1>
+
+            <div class="score-display" id="final-score"></div>
+
+            <div class="time-display" style="text-align: center; font-size: 1.5em; margin-top: 10px;">
+                Total Time: <span id="final-time-display">0:00.000</span>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Total Questions</h3>
+                    <p>25</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Correct Answers</h3>
+                    <p id="correct-count">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Final Accuracy</h3>
+                    <p id="final-accuracy">0%</p>
+                </div>
+            </div>
+
+            <input type="text" id="player-name" placeholder="Enter your name (letters only)" maxlength="50" />
+            <button class="btn" id="submit-score-btn" onclick="submitScore()">Submit to Leaderboard</button>
+
+            <div class="leaderboard" id="leaderboard-section" style="display: none;">
+                <h2 style="margin-bottom: 20px; color: #c77d00;">🏅 Top 10 Players</h2>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                            <th>Time</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn" onclick="playAgain()">Play Again</button>
+                <button class="btn btn-secondary" onclick="showScreen('start-screen')">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        const API_BASE = '/api/game';
+        let gameSession = null;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let selectedAnswer = null;
+        let currentDifficulty = '';
+        let questionsPerDifficulty = 5;
+        let questionAnswered = false;
+        let difficultyCorrectCount = 0;
+        let difficultyResults = [0, 0, 0, 0, 0];
+
+        // Time tracking variables
+        let questionStartTime = null;
+        let totalTimeMs = 0;
+        let timerInterval = null;
+
+        const difficultyNames = ['warmup', 'easy', 'medium', 'hard', 'impossible'];
+        const difficultyPoints = { warmup: 1, easy: 2, medium: 3, hard: 4, impossible: 5 };
+
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Format time helper
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            const milliseconds = ms % 1000;
+            return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+        }
+
+        // Start question timer
+        function startQuestionTimer() {
+            questionStartTime = Date.now();
+
+            // Update timer display every 10ms
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (questionStartTime !== null && !questionAnswered) {
+                    const elapsed = Date.now() - questionStartTime;
+                    const total = totalTimeMs + elapsed;
+                    document.getElementById('timer').textContent = formatTime(total);
+                }
+            }, 10);
+        }
+
+        // Stop question timer
+        function stopQuestionTimer() {
+            if (questionStartTime !== null) {
+                const timeSpent = Date.now() - questionStartTime;
+                totalTimeMs += timeSpent;
+                questionStartTime = null;
+
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+
+                return timeSpent;
+            }
+            return 0;
+        }
+
+        async function startGame() {
+            try {
+                const response = await fetch(`${API_BASE}/start`, { method: 'POST' });
+                gameSession = await response.json();
+
+                currentQuestionIndex = 0;
+                score = 0;
+                correctAnswers = 0;
+                difficultyResults = [0, 0, 0, 0, 0];
+
+                // Reset time tracking
+                totalTimeMs = 0;
+                questionStartTime = null;
+                if (timerInterval) clearInterval(timerInterval);
+
+                showDifficultyScreen();
+            } catch (error) {
+                alert('Failed to start game: ' + error.message);
+                showScreen('start-screen');
+            }
+        }
+
+        function playAgain() {
+            // Reset result screen elements
+            document.getElementById('player-name').value = '';
+            document.getElementById('player-name').style.display = 'block';
+            document.getElementById('submit-score-btn').style.display = 'block';
+            document.getElementById('leaderboard-section').style.display = 'none';
+
+            // Start a new game
+            startGame();
+        }
+
+        async function showLeaderboardScreen() {
+            await loadStandaloneLeaderboard();
+            showScreen('leaderboard-screen');
+        }
+
+        async function loadStandaloneLeaderboard() {
+            try {
+                const response = await fetch(`${API_BASE}/leaderboard?top=10`);
+                const entries = await response.json();
+
+                const tbody = document.getElementById('standalone-leaderboard-body');
+                tbody.innerHTML = '';
+
+                entries.forEach((entry, index) => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = index + 1;
+                    row.insertCell(1).textContent = entry.name;
+                    row.insertCell(2).textContent = entry.score;
+                    row.insertCell(3).textContent = formatTime(entry.totalTimeMs || 0);
+
+                    const date = new Date(entry.date);
+                    row.insertCell(4).textContent = date.toLocaleDateString();
+                });
+            } catch (error) {
+                console.error('Failed to load leaderboard:', error);
+            }
+        }
+
+        function showDifficultyScreen() {
+            // Stop timer when showing difficulty screen
+            stopQuestionTimer();
+
+            const difficultyIndex = Math.floor(currentQuestionIndex / questionsPerDifficulty);
+            currentDifficulty = difficultyNames[difficultyIndex];
+
+            document.getElementById('current-difficulty').textContent = currentDifficulty.toUpperCase();
+
+            const badge = document.getElementById('difficulty-badge');
+            badge.textContent = currentDifficulty;
+            badge.className = `difficulty-badge difficulty-${currentDifficulty}`;
+
+            document.getElementById('current-score').textContent = score;
+            document.getElementById('difficulty-time-display').textContent = formatTime(totalTimeMs);
+
+            const prevResultsDisplay = document.getElementById('previous-results-display');
+            if (difficultyIndex > 0) {
+                let resultsHTML = '<div class="previous-results-box">';
+                resultsHTML += '<div class="previous-results-title">Previous Results</div>';
+                for (let i = 0; i < difficultyIndex; i++) {
+                    const correct = difficultyResults[i];
+                    resultsHTML += `
+                                                                <div class="difficulty-result-row ${difficultyNames[i]}">
+                                                                    <div class="result-row-name">${difficultyNames[i]}</div>
+                                                                    <div class="result-row-score">${correct} / ${questionsPerDifficulty}</div>
+                                                                </div>
+                                                            `;
+                }
+                resultsHTML += '</div>';
+                prevResultsDisplay.innerHTML = resultsHTML;
+            } else {
+                prevResultsDisplay.innerHTML = '';
+            }
+
+            difficultyCorrectCount = 0;
+
+            showScreen('difficulty-screen');
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex >= gameSession.questions.length) {
+                showResults();
+                return;
+            }
+
+            const question = gameSession.questions[currentQuestionIndex];
+            const newDifficulty = question.difficulty;
+
+            if (newDifficulty !== currentDifficulty && currentQuestionIndex > 0) {
+                showDifficultyScreen();
+            } else {
+                displayQuestion();
+            }
+        }
+
+        function displayQuestion() {
+            const question = gameSession.questions[currentQuestionIndex];
+            selectedAnswer = null;
+            questionAnswered = false;
+
+            const badge = document.getElementById('question-difficulty-badge');
+            badge.textContent = question.difficulty;
+            badge.className = `difficulty-badge difficulty-${question.difficulty}`;
+
+            document.getElementById('score-display').textContent = `Score: ${score}`;
+
+            document.getElementById('question-text').innerHTML = question.questionText;
+
+            const questionImage = document.getElementById('question-image');
+            if (question.imageUrl) {
+                questionImage.src = question.imageUrl;
+                questionImage.style.display = 'block';
+            } else {
+                questionImage.style.display = 'none';
+            }
+
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+
+                if (option.imageUrl) {
+                    const img = document.createElement('img');
+                    img.src = option.imageUrl;
+                    optionDiv.appendChild(img);
+                } else if (option.text) {
+                    const text = document.createElement('div');
+                    text.textContent = option.text;
+                    optionDiv.appendChild(text);
+                }
+
+                optionDiv.onclick = () => selectAnswer(index, option);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            document.getElementById('next-btn').style.display = 'none';
+
+            showScreen('question-screen');
+
+            // Start timer after a small delay to ensure screen is shown
+            setTimeout(() => startQuestionTimer(), 50);
+        }
+
+        function selectAnswer(index, option) {
+            if (questionAnswered) return;
+
+            // Stop timer when answer is selected
+            stopQuestionTimer();
+            questionAnswered = true;
+
+            selectedAnswer = option;
+            const question = gameSession.questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+
+            options.forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+
+                if (i === index) {
+                    opt.classList.add('selected');
+                }
+
+                const optionData = question.options[i];
+                if (optionData.isCorrect) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (option.isCorrect) {
+                const points = difficultyPoints[question.difficulty];
+                score += points;
+                correctAnswers++;
+                difficultyCorrectCount++;
+
+                const diffIndex = difficultyNames.indexOf(question.difficulty);
+                difficultyResults[diffIndex]++;
+            } else {
+                options[index].classList.add('incorrect');
+            }
+
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function handleNext() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            currentQuestionIndex++;
+            nextQuestion();
+        }
+
+        function showResults() {
+            // Stop timer when showing results
+            stopQuestionTimer();
+
+            document.getElementById('final-score').textContent = score + ' points';
+            document.getElementById('correct-count').textContent = correctAnswers;
+            document.getElementById('final-time-display').textContent = formatTime(totalTimeMs);
+
+            const finalAccuracy = Math.round((correctAnswers / gameSession.questions.length) * 100);
+            document.getElementById('final-accuracy').textContent = finalAccuracy + '%';
+
+            showScreen('result-screen');
+        }
+
+        async function submitScore() {
+            const name = document.getElementById('player-name').value.trim();
+
+            if (!name) {
+                alert('Please enter your name!');
+                return;
+            }
+
+            try {
+                await fetch(`${API_BASE}/submit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        score,
+                        totalTimeMs: totalTimeMs
+                    })
+                });
+
+                await loadLeaderboard();
+                document.getElementById('leaderboard-section').style.display = 'block';
+                document.getElementById('player-name').style.display = 'none';
+                document.getElementById('submit-score-btn').style.display = 'none';
+            } catch (error) {
+                alert('Failed to submit score: ' + error.message);
+            }
+        }
+
+        async function loadLeaderboard() {
+            try {
+                const response = await fetch(`${API_BASE}/leaderboard?top=10`);
+                const entries = await response.json();
+
+                const tbody = document.getElementById('leaderboard-body');
+                tbody.innerHTML = '';
+
+                entries.forEach((entry, index) => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = index + 1;
+                    row.insertCell(1).textContent = entry.name;
+                    row.insertCell(2).textContent = entry.score;
+                    row.insertCell(3).textContent = formatTime(entry.totalTimeMs || 0);
+
+                    const date = new Date(entry.date);
+                    row.insertCell(4).textContent = date.toLocaleDateString();
+                });
+            } catch (error) {
+                console.error('Failed to load leaderboard:', error);
+            }
+        }
+
+        function showScreen(screenClass) {
+            document.querySelectorAll('.start-screen, .difficulty-screen, .question-screen, .result-screen, .leaderboard-screen')
+                .forEach(screen => screen.classList.remove('active'));
+
+            document.querySelector('.' + screenClass).classList.add('active');
+        }
+    </script>
+
+
+    <footer style="padding: 40px 0px 0px 0px">
+        <div class="container">
+            <div class="footer-social">
+                <h3>Connect with Inwector</h3>
+                <div class="footer-links">
+                    <a href="https://youtube.com/@inwector" target="_blank" class="footer-link youtube">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 180"><path fill="#f00" d="M250.346 28.075A32.18 32.18 0 0 0 227.69 5.418C207.824 0 127.87 0 127.87 0S47.912.164 28.046 5.582A32.18 32.18 0 0 0 5.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18 0 0 0 22.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955 0 99.82-5.418a32.18 32.18 0 0 0 22.657-22.657c6.338-35.348 8.291-89.1-.164-123.134" /><path fill="#fff" d="m102.421 128.06l66.328-38.418l-66.328-38.418z" /></svg>
+                        <div class="platform">YouTube</div>
+                        <div class="handle">@inwector</div>
+                    </a>
+                    <a href="https://discord.gg/dxXqAceNaD" target="_blank" class="footer-link discord">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 199"><path fill="#5865f2" d="M216.856 16.597A208.5 208.5 0 0 0 164.042 0c-2.275 4.113-4.933 9.645-6.766 14.046q-29.538-4.442-58.533 0c-1.832-4.4-4.55-9.933-6.846-14.046a207.8 207.8 0 0 0-52.855 16.638C5.618 67.147-3.443 116.4 1.087 164.956c22.169 16.555 43.653 26.612 64.775 33.193A161 161 0 0 0 79.735 175.3a136.4 136.4 0 0 1-21.846-10.632a109 109 0 0 0 5.356-4.237c42.122 19.702 87.89 19.702 129.51 0a132 132 0 0 0 5.355 4.237a136 136 0 0 1-21.886 10.653c4.006 8.02 8.638 15.67 13.873 22.848c21.142-6.58 42.646-16.637 64.815-33.213c5.316-56.288-9.08-105.09-38.056-148.36M85.474 135.095c-12.645 0-23.015-11.805-23.015-26.18s10.149-26.2 23.015-26.2s23.236 11.804 23.015 26.2c.02 14.375-10.148 26.18-23.015 26.18m85.051 0c-12.645 0-23.014-11.805-23.014-26.18s10.148-26.2 23.014-26.2c12.867 0 23.236 11.804 23.015 26.2c0 14.375-10.148 26.18-23.015 26.18" /></svg>
+                        <div class="platform">Discord</div>
+                        <div class="handle">Join Server</div>
+                    </a>
+                    <a href="https://twitch.tv/inwector" target="_blank" class="footer-link twitch">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 268"><path fill="#5a3e85" d="M17.458 0L0 46.556v186.201h63.983v34.934h34.931l34.898-34.934h52.36L256 162.954V0zm23.259 23.263H232.73v128.029l-40.739 40.741H128L93.113 226.92v-34.886H40.717zm64.008 116.405H128V69.844h-23.275zm63.997 0h23.27V69.844h-23.27z" /></svg>
+                        <div class="platform">Twitch</div>
+                        <div class="handle">@inwector</div>
+                    </a>
+                    <a href="https://kick.com/inwector" target="_blank" class="footer-link kick">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 290"><path fill="#05ce78" d="m209.302 144.583l26.28-26.105c27.224-27.042 27.224-71.087 0-98.129s-71.564-27.043-98.788 0l-9.569 9.504C114.557 11.781 93.667 0 69.812 0C31.267 0 0 31.059 0 69.346v150.34c0 38.287 31.267 69.346 69.812 69.346c23.855 0 44.745-11.781 57.413-29.854l9.569 9.505c27.224 27.043 71.564 27.043 98.788 0s27.224-71.086 0-98.129z" /></svg>
+                        <div class="platform">Kick</div>
+                        <div class="handle">@inwector</div>
+                    </a><a href="https://buymeacoffee.com/inwector" target="_blank" class="footer-link support">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 882 1276">
+                            <path fill="#FFDD00" d="M808 371c-6-33-37-56-71-56H681l-11-67c-6-34-37-59-72-59H99c-43 0-77 38-71 81l103 684c6 34 37 59 72 59h355c35 0 66-25 72-59l14-90h42c107 0 191-97 174-202l-22-135zm-137 401h-37l-39-250h75c21 0 39 15 43 36l22 135c4 26-16 49-43 49z" />
+                            <path fill="#000" d="M513 1104c0 95-77 172-172 172s-172-77-172-172h344z" />
+                        </svg>
+                        <div class="platform">Support</div>
+                        <div class="handle">@inwector</div>
+                    </a>
+                </div>
+                <h5 style="padding:20px 0px 0px 0px">If you see any bugs or issues with the questions, you can tell me in discord.</h5>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

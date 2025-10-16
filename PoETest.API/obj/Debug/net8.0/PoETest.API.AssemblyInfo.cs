@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PoETest.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+15c6532c685ed697271b0492a014e0aea4ba173a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4b5d97b64bd4ad211b6bffe5ca61f62e881c3ec5")]
 [assembly: System.Reflection.AssemblyProductAttribute("PoETest.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PoETest.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

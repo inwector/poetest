@@ -95,15 +95,20 @@ namespace PoETest.API.Controllers
                             new AnswerOption { Text = chosenItem.Type.Name, IsCorrect = true }
                         };
 
-                        options.AddRange(allAscendancies
-                            .Where(i => i.TypeId != chosenItem.TypeId)
+                        // Get distinct ascendancy type names, excluding the correct answer
+                        var otherAscendancyNames = allAscendancies
+                            .Select(i => i.Type.Name)
+                            .Distinct()
+                            .Where(name => name != chosenItem.Type.Name)
                             .OrderBy(_ => Guid.NewGuid())
                             .Take(3)
-                            .Select(i => new AnswerOption
-                            {
-                                Text = i.Type.Name,
-                                IsCorrect = false
-                            }));
+                            .ToList();
+
+                        options.AddRange(otherAscendancyNames.Select(name => new AnswerOption
+                        {
+                            Text = name,
+                            IsCorrect = false
+                        }));
 
                         return Ok(new QuestionDto
                         {
@@ -197,7 +202,7 @@ namespace PoETest.API.Controllers
 
                         return Ok(new QuestionDto
                         {
-                            QuestionText = $"Which item has the modifier \"{chosen.Modifier.ModifierText}\"?",
+                            QuestionText = $"Which \'{(ascendancyTypeIds.Contains(chosen.Item.Type.Id) ? "Ascendancy" : "Unique")}\' has the modifier \"{chosen.Modifier.ModifierText}\"?",
                             Options = options.OrderBy(x => Guid.NewGuid()).ToList()
                         });
                     }
@@ -206,6 +211,17 @@ namespace PoETest.API.Controllers
 
             // ---- IMAGE/TEXT QUESTION ----
             var correctImageItem = candidates[_random.Next(candidates.Count)];
+
+            if (ascendancyTypeIds.Contains(correctImageItem.TypeId))
+            {
+                // Try to find a non-ascendancy item instead
+                var nonAscendancyItems = candidates.Where(i => !ascendancyTypeIds.Contains(i.TypeId)).ToList();
+
+                if (nonAscendancyItems.Count < 4)
+                    return BadRequest("Not enough non-ascendancy items to generate an image question.");
+
+                correctImageItem = nonAscendancyItems[_random.Next(nonAscendancyItems.Count)];
+            }
 
             var incorrectImageItems = candidates
                 .Where(i => i.Id != correctImageItem.Id && i.TypeId == correctImageItem.TypeId)

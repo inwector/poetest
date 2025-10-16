@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PoETest.API.Data;
 
@@ -11,9 +12,11 @@ using PoETest.API.Data;
 namespace PoETest.API.Migrations
 {
     [DbContext(typeof(PoETestContext))]
-    partial class PoETestContextModelSnapshot : ModelSnapshot
+    [Migration("20251016093828_AddTimeTracking")]
+    partial class AddTimeTracking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
