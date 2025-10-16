@@ -105,16 +105,16 @@ namespace PoETest.API.Controllers
 
             IEnumerable<int> fameRange = difficulty.ToLower() switch
             {
-                "warmup" => new[] { 5 },
-                "easy" => new[] { 4, 5 },
-                "medium" => new[] { 3, 4 },
-                "hard" => new[] { 2, 3 },
+                "warmup" => new[] { 4, 5 },
+                "easy" => new[] { 3, 4 },
+                "medium" => new[] { 2, 3 },
+                "hard" => new[] { 1, 2 },
                 "impossible" => new[] { 1 },
                 _ => Enumerable.Range(1, 5)
             };
 
             var candidates = allItems.Where(i => fameRange.Contains(i.Fame)).ToList();
-            bool allowAscendancyQuestions = fameRange.Any(f => f is 2 or 3 or 4);
+            bool allowAscendancyQuestions = fameRange.Any(f => f is 3 or 4);
 
             // Debug logging
             Console.WriteLine($"[{difficulty}] Total candidates: {candidates.Count}");
