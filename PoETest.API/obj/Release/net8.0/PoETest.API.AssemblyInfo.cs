@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PoETest.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e2003a6c1c7de9a4253a2a281292b1d5229477c8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47dc7a32d3f056a3c5df032c79afd27993cef5b0")]
 [assembly: System.Reflection.AssemblyProductAttribute("PoETest.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PoETest.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
