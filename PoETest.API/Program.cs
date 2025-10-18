@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add DB context
 builder.Services.AddDbContext<PoETestContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PoETestDB")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PoETestDB")).UseSnakeCaseNamingConvention());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
