@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PoE Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background: #222;
+            color: gold;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 3px solid gold;
+        }
+
+        /* CONTROL BAR */
+        #controls {
+            background: #1a1a1a;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+        }
+
+            #controls select,
+            #controls button {
+                padding: 10px 20px;
+                margin: 5px;
+                font-size: 1em;
+                border-radius: 5px;
+                border: none;
+            }
+
+            #controls button {
+                background: gold;
+                color: #111;
+                cursor: pointer;
+            }
+
+                #controls button:hover {
+                    background: orange;
+                }
+
+        /* MAIN GAME AREA */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Question + Timer Row */
+        #questionRow {
+            display: flex;
+            flex: 1;
+            padding: 10px;
+            gap: 10px;
+            box-sizing: border-box;
+        }
+
+        #questionBox {
+            flex: 4;
+            background: #222;
+            border-radius: 8px;
+            font-size: 1.5em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            border: 2px solid #444;
+        }
+
+        #question {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #timerBox {
+            flex: 1;
+            background: #333;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #444;
+        }
+
+        #sideBox {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* space between score and timer */
+        }
+
+        #scoreBox, #timerBox {
+            flex: 1;
+            border: 2px solid #444;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        #scoreBox {
+            background: #222;
+            color: gold;
+        }
+
+        #timerBox {
+            background: #333;
+            color: white;
+        }
+
+        .score-label, .timer-label {
+            font-size: 1em;
+            opacity: 0.8;
+        }
+
+        .score-value, .timer-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* Pulse animation */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 1s infinite;
+            color: red !important;
+        }
+
+        /* Answers */
+        #options {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .option {
+            background: #222;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 2em;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border: 2px solid #444;
+        }
+
+            .option img {
+                max-width: 100%;
+                max-height: 150px;
+            }
+
+            .option:hover:not(.disabled) {
+                background: #444;
+            }
+
+            .option.correct {
+                background: green !important;
+                color: white;
+            }
+
+            .option.wrong {
+                background: red !important;
+                color: white;
+            }
+
+            .option.disabled {
+                pointer-events: none;
+                opacity: 0.6;
+            }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            header {
+                font-size: 2em;
+            }
+
+            #questionBox {
+                font-size: 2em;
+            }
+
+            #timeBox {
+                font-size: 2em;
+            }
+
+            .option {
+                font-size: 1.5em;
+                padding: 10px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .score-label, .timer-label {
+                font-size: 1.2em;
+            }
+
+            .score-value, .timer-value {
+                font-size: 3em;
+            }
+
+            #questionBox {
+                font-size: 2em;
+            }
+
+            .option {
+                font-size: 2em;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .score-label, .timer-label {
+                font-size: 2em;
+            }
+
+            .score-value, .timer-value {
+                font-size: 5em;
+            }
+
+            #questionBox {
+                font-size: 3em;
+            }
+
+            .option {
+                font-size: 3em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <header>Path of Exile Quiz</header>
+
+    <div id="controls">
+        <label for="difficulty">Difficulty: </label>
+        <select id="difficulty">
+            <option value="warmup">Warmup</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+            <option value="impossible">Impossible</option>
+        </select>
+        <button onclick="loadQuestion()">Next Question</button>
+    </div>
+
+    <main>
+        <div id="questionRow">
+            <div id="questionBox">
+                <div id="question">Loading question...</div>
+                <div id="questionImage"></div>
+            </div>
+            <div id="sideBox">
+                <div id="scoreBox">
+                    <div class="score-label">Score</div>
+                    <div id="sideScore" class="score-value">0</div>
+                </div>
+                <div id="timerBox">
+                    <div class="timer-label">Time</div>
+                    <div id="timeBox" class="timer-value">30</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="options"></div>
+    </main>
+
+    <script src="quiz.js"></script>
+</body>
+</html>
